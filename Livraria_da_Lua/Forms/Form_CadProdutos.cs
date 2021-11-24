@@ -53,13 +53,14 @@ namespace Livraria_da_Lua.Forms
         {
             try
             {
-                //******* Falta fazer a inclusão do Banco de dados ***********;
                 //Aqui chama a classe Prod_Livros.Unit pq estamos incluindo o livro
                 Prod_Livros.Unit C = new Prod_Livros.Unit();
                 //Chama a classe de de Leitura do Formulário
                 C = LeituraFormulario();
                 //Chama a classe que valida os dados que foram digitados no formulário
-                C.validaClasse(); 
+                C.validaClasse();
+                C.IncluirFicharioSQL("Livro");
+
                 //Após a inclusão do livro aparece a mensagem na tela do usuário confirmando a inclusão no banco de dados
                 MessageBox.Show("OK: Cadastro efetivado", "Livraria da Lua", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -71,10 +72,9 @@ namespace Livraria_da_Lua.Forms
             }
         }
 
-        //Para fazer a busca se o livro existe e se existir mostrar os dados do livro
+        //Busca se o livro existe e se existir mostrar os dados do livro
         private void Btn_Buscar_Click(object sender, EventArgs e)
-        {
-            //******* Falta fazer a inclusão do Banco de dados ***********;
+        {            
             //Teste para verificar se o campo ISBN está vázio
             if (Mask_ISBN.Text == "")
             {
@@ -87,7 +87,7 @@ namespace Livraria_da_Lua.Forms
                     //Se ele passar no teste ele faz a busca no Banco de Dados e se retornar um ISBN válido ele preenche os dados.
                     //Se não ele mostra que o livro não existe através de uma mensagem
                     Prod_Livros.Unit C = new Prod_Livros.Unit();
-                    //******* Falta fazer a inclusão do Banco de dados ***********;
+                    C = C.BuscarFicharioSQL(Mask_ISBN.Text, "Livro");
                     if (C == null)
                     {
                         MessageBox.Show("Livro não encontrado", "Livraria da Lua", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -97,6 +97,9 @@ namespace Livraria_da_Lua.Forms
                         //Chama a função que preenche os campos com os dados do livro
                         EscreveFormulario(C);
                     }
+
+                    EscreveFormulario(C);
+
                 }
                 catch (Exception Ex)
                 {
@@ -108,7 +111,6 @@ namespace Livraria_da_Lua.Forms
         //Para alterar dados do livro existente
         private void Btn_Alterar_Click(object sender, EventArgs e)
         {
-            //******* Falta fazer a inclusão do Banco de dados ***********;
             //Teste para verificar se o campo ISBN está vazio
             if (Mask_ISBN.Text == "")
             {
@@ -119,12 +121,16 @@ namespace Livraria_da_Lua.Forms
                 try
                 {
                     Prod_Livros.Unit C = new Prod_Livros.Unit();
+                    
                     //Chama a classe de de Leitura do Formulário
                     C = LeituraFormulario();
+                    
                     //Chama a classe que valida os dados que foram digitados no formulário
-                    C.validaClasse();
                     //Após a validação, atualiza os dados no Banco de Dados.
-                    //Mostrando a mensagem que o livro foi alterado com sucesso.
+                    C.validaClasse();
+                    C.AlterarFicharioSQL("Livro");
+
+                    //Mostra a mensagem que o livro foi alterado com sucesso.
                     MessageBox.Show("OK: livro alterado com sucesso", "Livraria da Lua", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 }
@@ -139,19 +145,19 @@ namespace Livraria_da_Lua.Forms
         //Para excluir todos os dados de um livro
         private void Btn_Excluir_Click(object sender, EventArgs e)
         {
-            //******* Falta fazer a inclusão do Banco de dados ***********;
             //Verifica se o ISBN está vazio ou não
             if (Mask_ISBN.Text == "")
             {
-                MessageBox.Show("ISBN do cliente vazio.", "Livraria da Lua", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("ISBN do livro vazio.", "Livraria da Lua", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
                 try
                 {
-                    Prod_Livros.Unit C = new Prod_Livros.Unit();
-
                     // Faz a busca no banco de dados se o Livro existe
+                    Prod_Livros.Unit C = new Prod_Livros.Unit();
+                    C = C.BuscarFicharioSQL(Mask_ISBN.Text, "Livro");
+
                     // Se o livro nao existe ele mostra a mensagem
                     if (C == null)
                     {
@@ -159,8 +165,16 @@ namespace Livraria_da_Lua.Forms
                     }
                     else
                     {
-                        //Se ele existe mostra os dados do livro
-                        
+                        //Cx de dialogo para conformação de excluir dados do ISBN
+                        EscreveFormulario(C);
+                        Frm_Questao Db = new Frm_Questao("cut", "Você quer excluir o livro?");
+                        Db.ShowDialog();
+                        if (Db.DialogResult == DialogResult.Yes)
+                        {
+                            C.ExcluirFicharioSQL("Livro");
+                            MessageBox.Show("OK: Livro excluido com sucesso", "Livraria da Lua", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            LimparFormulario();
+                        }
                         {
                             //Após a confirmação da exclusão dos dados do livro aparece a mensagem:
                             MessageBox.Show("OK: livro excluido com sucesso", "Livraria da Lua", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -222,6 +236,38 @@ namespace Livraria_da_Lua.Forms
             Txt_Ano.Text = C.Ano;
             Txt_Pagina.Text = C.Paginas;
             Txt_Descricao.Text = C.Descricao;
+        }
+
+        private void Btn_BuscaCliente_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Prod_Livros.Unit C = new Prod_Livros.Unit();
+                var ListaBusca = C.ListaFicharioSQL("Livro");
+                Frm_Busca FForm = new Frm_Busca(ListaBusca);
+                FForm.ShowDialog();
+                if (FForm.DialogResult == DialogResult.OK)
+                {
+                    var idSelect = FForm.idSelect;
+                    //C.BuscarFichario(idSelect, "C:\\Users\\bruno\\Desktop\\WinForms\\UNIVALI\\PetShop\\Fichario");
+                    //C.BuscarFicharioDB(idSelect, "Cliente");
+                    C.BuscarFicharioSQL(idSelect, "Cliente");
+
+                    if (C == null)
+                    {
+                        MessageBox.Show("Identificador não encontrado", "Cão.mia", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        EscreveFormulario(C);
+                    }
+                }
+            }
+
+            catch (Exception Ex)
+            {
+                MessageBox.Show(Ex.Message, "Cão.mia", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

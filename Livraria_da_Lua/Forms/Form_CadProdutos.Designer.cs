@@ -99,6 +99,7 @@ namespace Livraria_da_Lua.Forms
             this.pictureBox11 = new System.Windows.Forms.PictureBox();
             this.Btn_Limpar = new System.Windows.Forms.Button();
             this.Btn_Incluir = new System.Windows.Forms.Button();
+            this.Btn_BuscaCliente = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
@@ -414,6 +415,7 @@ namespace Livraria_da_Lua.Forms
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.Btn_BuscaCliente);
             this.groupBox1.Controls.Add(this.Txt_Editora);
             this.groupBox1.Controls.Add(this.pictureBox14);
             this.groupBox1.Controls.Add(this.Mask_ISBN);
@@ -960,6 +962,25 @@ namespace Livraria_da_Lua.Forms
             this.Btn_Incluir.UseVisualStyleBackColor = false;
             this.Btn_Incluir.Click += new System.EventHandler(this.Btn_Incluir_Click);
             // 
+            // Btn_BuscaCliente
+            // 
+            this.Btn_BuscaCliente.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(214)))), ((int)(((byte)(102)))));
+            this.Btn_BuscaCliente.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.Btn_BuscaCliente.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(226)))), ((int)(((byte)(229)))));
+            this.Btn_BuscaCliente.FlatAppearance.BorderSize = 0;
+            this.Btn_BuscaCliente.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(226)))), ((int)(((byte)(229)))));
+            this.Btn_BuscaCliente.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(226)))), ((int)(((byte)(229)))));
+            this.Btn_BuscaCliente.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Btn_BuscaCliente.Font = new System.Drawing.Font("Nirmala UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Btn_BuscaCliente.ForeColor = System.Drawing.Color.Black;
+            this.Btn_BuscaCliente.Location = new System.Drawing.Point(239, 43);
+            this.Btn_BuscaCliente.Name = "Btn_BuscaCliente";
+            this.Btn_BuscaCliente.Size = new System.Drawing.Size(129, 23);
+            this.Btn_BuscaCliente.TabIndex = 29;
+            this.Btn_BuscaCliente.Text = "Livros cadastrados";
+            this.Btn_BuscaCliente.UseVisualStyleBackColor = false;
+            this.Btn_BuscaCliente.Click += new System.EventHandler(this.Btn_BuscaCliente_Click);
+            // 
             // Form_CadProdutos
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1095,5 +1116,6 @@ namespace Livraria_da_Lua.Forms
         private System.Windows.Forms.Button Btn_Limpar;
         private System.Windows.Forms.Button Btn_Incluir;
         private System.Windows.Forms.MaskedTextBox Mask_ISBN;
+        private System.Windows.Forms.Button Btn_BuscaCliente;
     }
 }
