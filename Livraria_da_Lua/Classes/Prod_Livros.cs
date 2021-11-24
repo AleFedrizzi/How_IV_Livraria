@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
-
-
-
+using Newtonsoft.Json;
+using Livraria_da_Lua.Classes.Database;
 
 namespace Livraria_da_Lua.Classes
 {
@@ -93,10 +92,116 @@ namespace Livraria_da_Lua.Classes
 
 
 
-           /*#region "CRUD do Fichario DB SQL Server"
+            #region "CRUD do Fichario DB SQL Server"
 
 
-            #endregion*/
+             public void IncluirFicharioSQL(string Conexao)
+             {
+                //Metodo para cadastro/inclusão de livro
+                 string livroJson = Prod_Livros.SerializedClassUnit(this);
+                 FicharioSQLServer F = new FicharioSQLServer(Conexao);
+                 if (F.status)
+
+                 {
+                     F.Incluir(this.Isbn, livroJson);
+                     if (!(F.status))
+                     {
+                         throw new Exception(F.mensagem);
+                     }
+                 }
+
+                 else
+                 {
+                     throw new Exception(F.mensagem);
+                 }
+
+             }
+
+            //Método para Buscar livro
+             public Unit BuscarFicharioSQL(string Isbn, string conexao)
+             {
+                 FicharioSQLServer F = new FicharioSQLServer(conexao);
+                 if (F.status)
+                 {
+                     string livroJson = F.Buscar(Isbn);
+                     return Prod_Livros.DesSerializedClassUnit(livroJson);
+                 }
+
+                 else
+                 {
+                     throw new Exception(F.mensagem);
+                 }
+             }
+
+            //Método Alterar cadastro de livro
+             public void AlterarFicharioSQL(string conexao)
+             {
+                 string livroJson = Prod_Livros.SerializedClassUnit(this);
+                 FicharioSQLServer F = new FicharioSQLServer(conexao);
+                 if (F.status)
+                 {
+                     F.Alterar(this.Isbn, livroJson);
+                     if (!(F.status))
+
+                     {
+                         throw new Exception(F.mensagem);
+                     }
+                 }
+                 else
+                 {
+                     throw new Exception(F.mensagem);
+                 }
+             }
+
+            //Método para excluir livro
+             public void ExcluirFicharioSQL(string conexao)
+             {
+                 FicharioSQLServer F = new FicharioSQLServer(conexao);
+                 if (F.status)
+                 {
+                     F.Apagar(this.Isbn);
+                     if (!(F.status))
+
+                     {
+                         throw new Exception(F.mensagem);
+                     }
+                 }
+                 else
+                 {
+                     throw new Exception(F.mensagem);
+                 }
+             }
+
+            //Método para listar livros
+             public List<List<string>> ListaFicharioSQL(string conexao)
+             {
+                 FicharioSQLServer F = new FicharioSQLServer(conexao);
+                 if (F.status)
+                 {
+                     List<string> List = new List<string>();
+                     List = F.BuscarTodos();
+                     if (F.status)
+                     {
+                         List<List<string>> ListaBusca = new List<List<string>>();
+                         for (int i = 0; i <= List.Count - 1; i++)
+                         {
+                             Prod_Livros.Unit C = Prod_Livros.DesSerializedClassUnit(List[i]);
+                             ListaBusca.Add(new List<string> { C.Isbn, C.Titulo });
+                         }
+                         return ListaBusca;
+                     }
+                     else
+                     {
+                         throw new Exception(F.mensagem);
+                     }
+                 }
+                 else
+                 {
+                     throw new Exception(F.mensagem);
+                 }
+             }
+
+             #endregion
 
         }
 
@@ -104,6 +209,20 @@ namespace Livraria_da_Lua.Classes
         public class List
         {
             public List<Unit> ListUnit { get; set; }
+        }
+
+        //Transforma Classe em Json
+        //Transforma string Json na classe Unit
+        public static Unit DesSerializedClassUnit(string vJsason)
+        {
+            return JsonConvert.DeserializeObject<Unit>(vJsason);
+        }
+
+        //Armazena o Json em classe
+        //Quando passar para a classe Unit transforma em string
+        public static string SerializedClassUnit(Unit unit)
+        {
+            return JsonConvert.SerializeObject(unit);
         }
 
     }
